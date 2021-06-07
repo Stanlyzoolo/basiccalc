@@ -8,6 +8,7 @@ import (
 func main () {
 	Somefunc("1+1")
 }
+
 func Somefunc (s string) int {
 	var result int
 	strSlice := []string{}

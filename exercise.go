@@ -3,31 +3,56 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
-func main () {
-	Somefunc("1+1")
+func main() {
+	strexpr := "5-1 -  3"
+	strEdited := TrimSpaces(strexpr)      // Output: 5-1-3
+	strSplited := StrSplitting(strEdited) // Output: [5 - 1 - 3]
+	resultCalc := Calculate(strSplited)   // Output: 4
+	fmt.Println(resultCalc)
 }
 
-func Somefunc (s string) int {
+func TrimSpaces(strexpr string) string {
+	return strings.ReplaceAll(strexpr, " ", "")
+}
+
+func StrSplitting(strEdited string) []string {
+	return strings.Split(strEdited, "")
+}
+
+func Calculate(strSplited []string) int {
 	var result int
-	strSlice := []string{}
-
-	for _, str := range s {
-		strSlice = append(strSlice, string(str))
-	}
-
-	for _, item := range strSlice {
-		digit1, _ := strconv.Atoi(strSlice[0])
-		digit2, _ := strconv.Atoi(strSlice[2])
-		switch item {
-		case "+":
-			result = digit1 + digit2
-		case "-":
-			result = digit1 - digit2
+	for k := range strSplited {
+		if strSplited[k+1] == "+" {
+			num1, _ := strconv.Atoi(strSplited[0])
+			num2, _ := strconv.Atoi(strSplited[2])
+			result = Addition(num1, num2)
+		}
+		if strSplited[k+1] == "-" {
+			num1, _ := strconv.Atoi(strSplited[0])
+			num2, _ := strconv.Atoi(strSplited[2])
+			result = Subtraction(num1, num2)
+		} else {
+			break
 		}
 	}
-
-	fmt.Println(result)
 	return result
+}
+
+func Addition(num1, num2 int) int {
+	return num1 + num2
+}
+
+func Subtraction(num1, num2 int) int {
+	return num1 - num2
+}
+
+func Multiplication(num1, num2 int) int {
+	return num1 * num2
+}
+
+func Division(num1, num2 int) int {
+	return num1 / num2
 }

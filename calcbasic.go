@@ -11,6 +11,8 @@ type Expression struct {
 	Calculate Operate
 }
 
+type Operate func(*Expression, byte) int
+
 func main() {
 	strexpr := "1+1"
 	arrayofints := []int{}
@@ -54,8 +56,6 @@ func (e *Expression) Subtraction() int {
 	e.X = e.X - e.Y
 	return e.X
 }
-
-type Operate func(*Expression, byte) int
 
 func getFunction() Operate {
 	return func(e *Expression, operator byte) int {

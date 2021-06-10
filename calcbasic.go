@@ -2,73 +2,116 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
 type Expression struct {
 	X, Y      int
-	Calculate Operate
+	// Calculate Operate
 }
 
-type Operate func(*Expression, byte) int
+func (e Expression) Additions() int {
+	e.X = e.X + e.Y
+	return e.X
+}
+
+func (e Expression) Subtractions() int {
+	e.X = e.X - e.Y
+	return e.X
+}
+
+type Operate func(int, int) int
+
+func (op Operate) Addition(e *Expression) int {
+	e.X = e.X + e.Y
+	return e.X
+} 
+
+func (op Operate) Subtraction(e *Expression) int {
+	e.X = e.X - e.Y
+	return e.X
+}
+
+var singledigits = map[string]int {
+	"0":0, "1":1, "2": 2, "3": 3, "4":4, "5": 5, "6": 6, "7": 7, "8": 8, "9":9,
+}
+
+var operators = map[string]interface{}{
+	"+": Operate.Addition,
+	"-": Operate.Subtraction,	
+}
+
 
 func main() {
 	strexpr := "1+1"
-	arrayofints := []int{}
 
 	strEdited := TrimSpaces(strexpr) // Output: 1+1
 	strofdigits := strings.Trim(strEdited, "+")
 
 	strSplited := StrSplitting(strofdigits) // Output: [1 + 1]
-	fmt.Println(strSplited)
+	fmt.Println("String array: ",strSplited)
 
-	for _, value := range strSplited {
-		digit, _ := strconv.Atoi(value)            // Здесь знаю, что ошибка со знаком +
-		arrayofints = append(arrayofints, digit)
+	exp := Expression{}
+
+	for _, symbol := range strSplited {
+		_, ok := singledigits[symbol]
+		if ok {
+			exp.X = singledigits[symbol]
+		} 
+			exp.Y = singledigits[symbol]
+		
 	}
-
-	fmt.Println(arrayofints)
-
-	result := Expression{
-		X:         arrayofints[0],
-		Y:         arrayofints[2],
-		Calculate: Operate(),           // Запутался в этом месте
-	}
-
-	fmt.Println(result)
+	fmt.Println("Filled structure: ", exp)
+	
 }
 
+// Working with input expresson
+// Trim all spaces
 func TrimSpaces(strexpr string) string {
 	return strings.ReplaceAll(strexpr, " ", "")
 }
 
+// Split expression into array []string
 func StrSplitting(strEdited string) []string {
 	return strings.Split(strEdited, "")
 }
 
-func (e *Expression) Addition() int {
-	e.X = e.X + e.Y
-	return e.X
-}
 
-func (e *Expression) Subtraction() int {
-	e.X = e.X - e.Y
-	return e.X
-}
 
-func getFunction() Operate {
-	return func(e *Expression, operator byte) int {
-		switch operator {
-		case '+':
-			return e.Addition()
-		case '-':
-			return e.Subtraction()
-		}
-		return 0
-	}
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// func getFunction() Operate {
+// 	return func(e *Expression, operator byte) int {
+// 		switch operator {
+// 		case '+':
+// 			return e.Addition()
+// 		case '-':
+// 			return e.Subtraction()
+// 		}
+// 		return 0
+// 	}
+
+// }
 
 // func Calculate(strSplited []string) int {
 // 	var result int
@@ -106,3 +149,10 @@ func getFunction() Operate {
 // func Division(num1, num2 int) int {
 // 	return num1 / num2
 // }
+
+// for _, value := range strSplited {
+	// 	_, ok := operators[value]
+	// 	if ok {
+	// 		exp.X = operators.
+	// 	}
+	// }

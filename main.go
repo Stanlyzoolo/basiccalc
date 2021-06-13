@@ -12,9 +12,8 @@ type Expression struct {
 }
 
 // Filling Expression structure
-func (exp *Expression) FillingExpression(stringarr []string) *Expression {
+func (exp *Expression) FillingExpression(stringarr []string) (*Expression, []string) {
 
-	// This part is for sequence "1+1"
 	for _, elem := range stringarr {
 		_, ok := singledigits[elem]
 
@@ -28,21 +27,9 @@ func (exp *Expression) FillingExpression(stringarr []string) *Expression {
 	}
 	exp.X = exp.Operation(exp.X, exp.Y)
 
-	//This part is for sequence "2-1+  2"
+	stringarr = stringarr[3:]
 
-	stringarrCut := stringarr[3:]
-
-	for _, elem := range stringarrCut {
-		_, ok := singledigits[elem]
-
-		if ok {
-			exp.Y = singledigits[stringarrCut[1]]
-		} else {
-			exp.Operation = operators[stringarrCut[0]]
-		}
-	}
-
-	return exp
+	return exp, stringarr
 }
 
 // Operation function
@@ -72,6 +59,33 @@ func PreparingInputSequence(condition string) []string {
 	return stringArr
 }
 
+//  Operations with filled structures
+func Operations(exp *Expression, stringarr []string) int {
+
+	for _, elem := range stringarr {
+		if len(stringarr) >= 2 {
+
+			_, ok := singledigits[elem]
+			if ok {
+				exp.Y = singledigits[stringarr[1]]
+
+				exp.X = exp.Operation(exp.X, exp.Y)
+				stringarr = stringarr[2:]
+
+			} else {
+				exp.Operation = operators[stringarr[0]]
+			}
+
+		} else {
+			fmt.Println("The sequence is empty")
+			break
+		}
+
+	}
+
+	return exp.X
+}
+
 func main() {
 
 	// First input
@@ -81,30 +95,37 @@ func main() {
 
 	firstExpression := Expression{}
 
-	completeFirstExpression := firstExpression.FillingExpression(preparedSequence)
+	completeFirstExpression, firstSeq := firstExpression.FillingExpression(preparedSequence)
 
-	resultOfFirstInput := &Expression{
-		X:         completeFirstExpression.X,
-		Y:         completeFirstExpression.Y,
-		Operation: completeFirstExpression.Operation,
-	}
+	resultOfFirstInput := Operations(completeFirstExpression, firstSeq)
 
-	fmt.Println("Result of first input: ", resultOfFirstInput.X) // Output 2
+	fmt.Println("Result of first input: ", resultOfFirstInput) // Output 2
 
 	//Second input
 	secondInput := "2+1  -2"
 	prSequence := PreparingInputSequence(secondInput)
-	fmt.Println("Prepared secind sequence: ", prSequence) //[2 + 1 - 2]
+	fmt.Println("Prepared second sequence: ", prSequence) //[2 + 1 - 2]
 
 	secondExpression := Expression{}
 
-	completeSecondExpression := secondExpression.FillingExpression(prSequence)
+	completeSecondExpression, secondSeq := secondExpression.FillingExpression(prSequence)
 
-	resultOfSecondInput := &Expression{
-		X:         completeSecondExpression.X,
-		Y:         completeSecondExpression.Y,
-		Operation: completeSecondExpression.Operation,
-	}
+	resultOfSecondInput := Operations(completeSecondExpression, secondSeq) // Output 1
 
-	fmt.Println("Result of second input: ", resultOfSecondInput.Operation(resultOfSecondInput.X, resultOfSecondInput.Y)) // Output 1
+	fmt.Println("Result of second input: ", resultOfSecondInput)
+
+	// Third input
+	thirdInput := "1+9-4+4-8+8-8+6"
+
+	preSequence := PreparingInputSequence(thirdInput)
+	fmt.Println("Prepared third sequence: ", preSequence)
+
+	thirdExpression := Expression{}
+
+	completedThirdExpression, thirdSeq := thirdExpression.FillingExpression(preSequence)
+
+	resultOfThirdInput := Operations(completedThirdExpression, thirdSeq)
+
+	fmt.Println("Result of second input: ", resultOfThirdInput) // Output 8
+
 }

@@ -126,6 +126,6 @@ func main() {
 
 	resultOfThirdInput := Operations(completedThirdExpression, thirdSeq)
 
-	fmt.Println("Result of second input: ", resultOfThirdInput) // Output 8
+	fmt.Println("Result of third input: ", resultOfThirdInput) // Output 8
 
 }

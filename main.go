@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -9,12 +10,93 @@ import (
 type Expression struct {
 	X, Y      int
 	Operation Operate
+	state     int // 0 - New struct, 1 - X, 2 - Operation, 3 - Y
 }
+
+func (exp *Expression) SetArgument(arg int) error {
+	if exp.state == 0 {
+		exp.X = arg
+		exp.state = 1
+		return nil
+	}
+
+	if exp.state == 2 {
+		exp.Y = arg
+		exp.state = 3
+		return nil
+	}
+
+	return errors.New("unexpected argument")
+}
+
+func (exp *Expression) SetOperator(fn Operate) error {
+	if exp.state == 1 {
+		exp.Operation = fn
+		exp.state = 2
+		return nil
+	}
+
+	return errors.New("unexpected operator")
+}
+
+func (exp *Expression) Evaluate() (int, error) {
+	if exp.state == 3 {
+		exp.X = exp.Operation(exp.X, exp.Y)
+		exp.state = 1
+		return exp.X, nil
+	}
+
+	return 0, errors.New("invalid expression")
+}
+
+func Calculate(input string) (int, error) {
+	exp := Expression{}
+
+	result := 0
+	var newError  error
+
+	for i, s := range strings.Split(input, "") {
+
+		if s == " " {
+			continue
+		}
+
+		arg, isDigit := singledigits[s]
+
+		if isDigit {
+			err := exp.SetArgument(arg)
+			if err != nil {
+				return 0, err
+			}
+
+			result, newError = exp.Evaluate()
+			if newError != nil {
+				// Выдать ошибку с указанием индекса (место происхождения ошибки)
+			}
+			continue
+		}
+
+		fn, isfn := operators[s]
+		if isfn {
+			err := exp.SetOperator(fn)
+			if err != nil {
+				return 0, err
+			}
+			continue
+		}
+	}
+	return result, newError
+}
+
+
+
+
+
 
 // Filling Expression structure
 func (exp *Expression) FillingExpression(stringarr []string) (*Expression, []string) {
 
-	for _, elem := range stringarr {
+	for _, elem := range stringarr[:3] {
 		_, ok := singledigits[elem]
 
 		if ok {
@@ -47,14 +129,14 @@ var singledigits = map[string]int{
 }
 
 // Preparing input condition with trim spaces
-func PreparingInputSequence(condition string) []string {
+func PreparingInputSequence(condition string) []string { // Лишняя функция
 	stringArr := []string{}
-	conditionArr := strings.Split(condition, "")
 
-	for _, str := range conditionArr {
-		if str != " " {
-			stringArr = append(stringArr, str)
+	for _, str := range strings.Split(condition, "") {
+		if str == " " {
+			continue
 		}
+		stringArr = append(stringArr, str)
 	}
 	return stringArr
 }

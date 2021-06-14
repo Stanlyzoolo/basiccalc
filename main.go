@@ -67,13 +67,13 @@ func Operations(exp *Expression, stringarr []string) int {
 
 			_, ok := singledigits[elem]
 			if ok {
-				exp.Y = singledigits[stringarr[1]]
+				exp.Y = singledigits[elem]
 
 				exp.X = exp.Operation(exp.X, exp.Y)
 				stringarr = stringarr[2:]
 
 			} else {
-				exp.Operation = operators[stringarr[0]]
+				exp.Operation = operators[elem]
 			}
 
 		} else {

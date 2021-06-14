@@ -10,7 +10,7 @@ import (
 type Expression struct {
 	X, Y      int
 	Operation Operate
-	state     int // 0 - New struct, 1 - X, 2 - Operation, 3 - Y
+	state     int // 0 - New struct, 1 - X, 2 - X and Operation, 3 - X, Y and Operation
 }
 
 func (exp *Expression) SetArgument(arg int) error {

@@ -6,11 +6,36 @@ import (
 	"strings"
 )
 
+const (
+	State0 int = iota
+	State1
+	State2
+	State3
+)
+
+// Map of single digits
+var singledigits = map[string]int{
+	"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+}
+
+// Operation function
+type Operate func(int, int) int
+
+// Map of operators "+" "-" and funcs
+var operators = map[string]Operate{
+	"+": func(x, y int) int { return x + y },
+	"-": func(x, y int) int { return x - y },
+}
+
 // Structure of operands and the operator
 type Expression struct {
 	X, Y      int
 	Operation Operate
 	state     int // 0 - New struct, 1 - X, 2 - X and Operation, 3 - X, Y and Operation
+}
+
+func (exp *Expression) isReady() bool {
+	return exp.state == State3
 }
 
 func (exp *Expression) SetArgument(arg int) error {
@@ -39,6 +64,16 @@ func (exp *Expression) SetOperator(fn Operate) error {
 	return errors.New("unexpected operator")
 }
 
+type EvalError struct {
+	Message  string
+	Position int
+	err      error
+}
+
+func (e *EvalError) Error() string {
+	return fmt.Sprintf("%s at position: %d", e.Message, e.Position)
+}
+
 func (exp *Expression) Evaluate() (int, error) {
 	if exp.state == 3 {
 		exp.X = exp.Operation(exp.X, exp.Y)
@@ -53,7 +88,7 @@ func Calculate(input string) (int, error) {
 	exp := Expression{}
 
 	result := 0
-	var newError  error
+	var newError error
 
 	for i, s := range strings.Split(input, "") {
 
@@ -64,34 +99,36 @@ func Calculate(input string) (int, error) {
 		arg, isDigit := singledigits[s]
 
 		if isDigit {
+
 			err := exp.SetArgument(arg)
 			if err != nil {
 				return 0, err
 			}
 
-			result, newError = exp.Evaluate()
-			if newError != nil {
-				// Выдать ошибку с указанием индекса (место происхождения ошибки)
+			if exp.isReady() {
+				result, err = exp.Evaluate() // https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully
+				if err != nil {
+					return 0, err
+				}
+				return result, nil
 			}
+
 			continue
 		}
 
 		fn, isfn := operators[s]
 		if isfn {
-			err := exp.SetOperator(fn)
-			if err != nil {
-				return 0, err
+			newError := exp.SetOperator(fn)
+			if newError != nil {
+				return 0, &EvalError{"invalid expression", i, newError}
 			}
 			continue
 		}
+
 	}
+
 	return result, newError
 }
-
-
-
-
-
 
 // Filling Expression structure
 func (exp *Expression) FillingExpression(stringarr []string) (*Expression, []string) {
@@ -112,20 +149,6 @@ func (exp *Expression) FillingExpression(stringarr []string) (*Expression, []str
 	stringarr = stringarr[3:]
 
 	return exp, stringarr
-}
-
-// Operation function
-type Operate func(int, int) int
-
-// Map of operators "+" "-" and funcs
-var operators = map[string]Operate{
-	"+": func(x, y int) int { return x + y },
-	"-": func(x, y int) int { return x - y },
-}
-
-// Map of single digits
-var singledigits = map[string]int{
-	"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
 }
 
 // Preparing input condition with trim spaces
@@ -209,5 +232,9 @@ func main() {
 	resultOfThirdInput := Operations(completedThirdExpression, thirdSeq)
 
 	fmt.Println("Result of third input: ", resultOfThirdInput) // Output 8
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("!!! Результат условия 2--:")
+	fmt.Println(Calculate("2--"))
 
 }

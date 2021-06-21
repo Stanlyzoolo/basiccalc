@@ -12,7 +12,7 @@ var Operators = map[string]Action{
 }
 
 type Expression struct {
-	X, Y      int
+	x, y     int
 	Evaluation Action
 	state     int
 }
@@ -30,13 +30,13 @@ func (exp *Expression) IsReady() bool {
 
 func (exp *Expression) SetArgument(arg int) error {
 	if exp.state == Initialized {
-		exp.X = arg
+		exp.x = arg
 		exp.state = FirstArgument
 		return nil
 	}
 
 	if exp.state == FirstArgWithOperator {
-		exp.Y = arg
+		exp.y = arg
 		exp.state = Ready
 		return nil
 	}
@@ -56,9 +56,9 @@ func (exp *Expression) SetOperator(fn Action) error {
 
 func (exp *Expression) Evaluate() (int, error) {
 	if exp.state == Ready {
-		exp.X = exp.Evaluation(exp.X, exp.Y)
+		exp.x = exp.Evaluation(exp.x, exp.y)
 		exp.state = FirstArgument
-		return exp.X, nil
+		return exp.x, nil
 	}
 
 	return 0, errors.New("invalid expression")

@@ -2,25 +2,23 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
-	
+
+	"github.com/Stanlyzoolo/homeworks/calcbasic/pkg/expression"
+	"github.com/pkg/errors"
 )
 
-type EvalError struct {
-	Message  string
-	Position int
-	err      error
-}
-
-func (e *EvalError) Error() string {
-	return fmt.Sprintf("%s at position: %d", e.Message, e.Position)
+var singledigits = map[string]int{
+	"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
 }
 
 func Calculate(input string) (int, error) {
-	exp := Expression{}
+	exp := expression.Expression{}
 
 	result := 0
-	var newError error
+
+	var operatorError error
 
 	for i, s := range strings.Split(input, "") {
 
@@ -37,7 +35,7 @@ func Calculate(input string) (int, error) {
 				return 0, err
 			}
 
-			if exp.isReady() {
+			if exp.IsReady() {
 				result, err = exp.Evaluate()
 				if err != nil {
 					return 0, err
@@ -48,16 +46,26 @@ func Calculate(input string) (int, error) {
 			continue
 		}
 
-		fn, isfn := operators[s]
+		fn, isfn := expression.Operators[s]
 		if isfn {
-			newError := exp.SetOperator(fn)
-			if newError != nil {
-				return 0, &EvalError{"invalid expression", i, newError}
+			operatorError := exp.SetOperator(fn)
+			if operatorError != nil {
+				return 0, errors.Wrapf(operatorError, "Invalid expression at position: %v", i)
 			}
 			continue
 		}
 
 	}
 
-	return result, newError
+	return result, operatorError
+}
+
+func main() {
+	CLIArguments := os.Args
+	StringExpression := strings.Join(CLIArguments[1:],"")
+	
+
+	result, error := Calculate(StringExpression)
+	fmt.Println(result, error)
+
 }

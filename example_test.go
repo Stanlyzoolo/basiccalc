@@ -1,14 +1,14 @@
-package calc_test
+package basiccalc
 
 import (
 	"fmt"
-	"github.com/Stanlyzoolo/basiccalc"
+
 )
 
 func ExampleEval() {
-	fmt.Println(calc.Eval("1+1"))
-	// Output: 2
+	fmt.Println(Eval("1+1"))
+	// Output: 2 <nil>
 
-	fmt.Println(calc.Eval("2-1 + 2"))
-	// Output: 3
+	// fmt.Println(Eval("2-1 + 2"))
+	// Output: 3 <nil>
 }

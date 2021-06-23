@@ -1,32 +1,33 @@
-package mathstuff_test
+package basiccalc
 
 import (
 	"testing"
 )
 
-var TestExpression = Expression{
-	x:          2,
-	y:          1,
-	evaluation: Operators["+"],
-	state:      3,
+var TestExpression = expression{
+	x:          0,
+	y:          0,
+	evaluation: nil,
+	state:      0,
 }
 
 func TestSetArgument(t *testing.T) {
 
-	arg := 3
+	arg := 2
 	if TestExpression.state != Ready {
 		err := TestExpression.SetArgument(arg)
 		if err != nil {
-			t.Error("State of TestExpression in not Initialized. Fail SetArgument() method")
+			t.Error("state of TestExpression in not Initialized. Fail SetArgument() method")
 		}
 	}
 
 	if TestExpression.state == Ready {
 		err := TestExpression.SetArgument(arg)
 		if err != nil {
-			t.Error("State of TestExpression is Ready and already has argument")
+			t.Error("state of TestExpression is Ready and already has argument")
 		}
 	}
+
 }
 
 func TestSetOperator(t *testing.T) {

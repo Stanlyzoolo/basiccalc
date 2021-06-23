@@ -11,10 +11,10 @@ var singledigits = map[string]int{
 }
 
 func Eval(input string) (int, error) {
-	exp : mathstuff.Expression{}
+	exp := expression{}
 
 	result := 0
-
+ 
 	var operatorError error
 
 	for i, s := range strings.Split(input, "") {
@@ -38,7 +38,7 @@ func Eval(input string) (int, error) {
 			continue
 		}
 
-		fn, isfn := mathstuff.Operators[s]
+		fn, isfn := operators[s]
 		if isfn {
 			operatorError := exp.SetOperator(fn)
 			if operatorError != nil {

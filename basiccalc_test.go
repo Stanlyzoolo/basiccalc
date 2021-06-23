@@ -1,7 +1,8 @@
-package calc_test
+package basiccalc_test
 
 import (
 	"testing"
+	. "github.com/Stanlyzoolo/basiccalc"
 )
 
 var input string = "2+1"

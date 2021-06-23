@@ -2,18 +2,18 @@ package basiccalc
 
 import (
 	"errors"
-)
+) 
 
 type Action func(int, int) int
 
-var Operators = map[string]Action{			// operators -> naming
+var operators = map[string]Action{			
 	"+": func(x, y int) int { return x + y },
 	"-": func(x, y int) int { return x - y },
 }
 
-type Expression struct {			// expression -> naming
+type expression struct {			
 	x, y     int
-	evaluation Action				// evaluation -> naming
+	evaluation Action				
 	state     int
 }
 
@@ -24,11 +24,11 @@ const (
 	Ready
 )
 
-func (exp *Expression) IsReady() bool {
+func (exp *expression) IsReady() bool {
 	return exp.state == Ready
 }
 
-func (exp *Expression) SetArgument(arg int) error {
+func (exp *expression) SetArgument(arg int) error {
 	if exp.state == Initialized {
 		exp.x = arg
 		exp.state = FirstArgument
@@ -44,7 +44,7 @@ func (exp *Expression) SetArgument(arg int) error {
 	return errors.New("unexpected argument")
 }
 
-func (exp *Expression) SetOperator(fn Action) error {
+func (exp *expression) SetOperator(fn Action) error {
 	if exp.state == FirstArgument {
 		exp.evaluation = fn
 		exp.state = FirstArgWithOperator
@@ -54,7 +54,7 @@ func (exp *Expression) SetOperator(fn Action) error {
 	return errors.New("unexpected operator")
 }
 
-func (exp *Expression) Calculate() (int, error) {
+func (exp *expression) Calculate() (int, error) {
 	if exp.state == Ready {
 		exp.x = exp.evaluation(exp.x, exp.y)
 		exp.state = FirstArgument

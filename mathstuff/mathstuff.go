@@ -1,4 +1,4 @@
-package expression
+package mathstuff
 
 import (
 	"errors"
@@ -6,14 +6,14 @@ import (
 
 type Action func(int, int) int
 
-var Operators = map[string]Action{
+var Operators = map[string]Action{			// operators -> naming
 	"+": func(x, y int) int { return x + y },
 	"-": func(x, y int) int { return x - y },
 }
 
-type Expression struct {
+type Expression struct {			// expression -> naming
 	x, y     int
-	Evaluation Action
+	evaluation Action				// evaluation -> naming
 	state     int
 }
 
@@ -46,7 +46,7 @@ func (exp *Expression) SetArgument(arg int) error {
 
 func (exp *Expression) SetOperator(fn Action) error {
 	if exp.state == FirstArgument {
-		exp.Evaluation = fn
+		exp.evaluation = fn
 		exp.state = FirstArgWithOperator
 		return nil
 	}
@@ -56,7 +56,7 @@ func (exp *Expression) SetOperator(fn Action) error {
 
 func (exp *Expression) Evaluate() (int, error) {
 	if exp.state == Ready {
-		exp.x = exp.Evaluation(exp.x, exp.y)
+		exp.x = exp.evaluation(exp.x, exp.y)
 		exp.state = FirstArgument
 		return exp.x, nil
 	}

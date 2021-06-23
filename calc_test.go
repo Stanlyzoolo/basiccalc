@@ -9,7 +9,7 @@ var input string = "2+1"
 func TestCalculate(t *testing.T) {
 	expected := 3
 
-	result, err := Calculate(input)
+	result, err := Eval(input)
 	if result != expected {
 		t.Error("Something went wrong", err)
 	}

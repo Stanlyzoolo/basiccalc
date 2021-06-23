@@ -8,7 +8,7 @@ var singledigits = map[string]int{
 }
 
 func Eval(input string) (int, error) {     //Eval -> naming
-	exp := expr.Expression{}
+	exp := epr.Expression{}
 
 	result := 0
 

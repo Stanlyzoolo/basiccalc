@@ -1,4 +1,4 @@
-package mathstuff
+package mathstuff_test
 
 import (
 	"testing"
@@ -40,7 +40,7 @@ func TestSetOperator(t *testing.T) {
 	}
 }
 
-func TestEvaluate(t *testing.T) {
+func TestCalculate(t *testing.T) {
 	want := 3
 
 	if TestExpression.state == Ready {

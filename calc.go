@@ -1,14 +1,17 @@
-package calc
+package basiccalc
 
-import "strings"
+import (
+	"fmt"
+	"strings"
 
+)
 
 var singledigits = map[string]int{
 	"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
 }
 
-func Eval(input string) (int, error) {     //Eval -> naming
-	exp := epr.Expression{}
+func Eval(input string) (int, error) {
+	exp : mathstuff.Expression{}
 
 	result := 0
 
@@ -30,12 +33,12 @@ func Eval(input string) (int, error) {     //Eval -> naming
 			}
 
 			if exp.IsReady() {
-				result, _ = exp.Evaluate()
+				result, _ = exp.Calculate()
 			}
 			continue
 		}
 
-		fn, isfn := expr.Operators[s]
+		fn, isfn := mathstuff.Operators[s]
 		if isfn {
 			operatorError := exp.SetOperator(fn)
 			if operatorError != nil {

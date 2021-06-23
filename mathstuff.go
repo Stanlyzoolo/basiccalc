@@ -1,4 +1,4 @@
-package mathstuff
+package basiccalc
 
 import (
 	"errors"
@@ -54,7 +54,7 @@ func (exp *Expression) SetOperator(fn Action) error {
 	return errors.New("unexpected operator")
 }
 
-func (exp *Expression) Evaluate() (int, error) {
+func (exp *Expression) Calculate() (int, error) {
 	if exp.state == Ready {
 		exp.x = exp.evaluation(exp.x, exp.y)
 		exp.state = FirstArgument

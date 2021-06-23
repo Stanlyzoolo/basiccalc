@@ -1,4 +1,4 @@
-module github.com/Stanlyzoolo/homeworks
+module github.com/Stanlyzoolo/basiccalc
 
 go 1.16
 

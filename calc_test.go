@@ -1,4 +1,4 @@
-package main
+package calc_test
 
 import (
 	"testing"
@@ -6,11 +6,11 @@ import (
 
 var input string = "2+1"
 
-func TestCalculate(t *testing.T) {
-	expected := 3
+func TestEval(t *testing.T) {
+	want := 3
 
-	result, err := Eval(input)
-	if result != expected {
+	got, err := Eval(input)
+	if got != want {
 		t.Error("Something went wrong", err)
 	}
 }

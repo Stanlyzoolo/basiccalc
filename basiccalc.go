@@ -1,3 +1,6 @@
+// Package basiccalc provides a primitive implementation of a basic calculator for 
+// calculating simple expressions consisting of single digits and mathematical
+//  addition and subtraction operators.
 package basiccalc
 
 import (
@@ -5,11 +8,14 @@ import (
 	"strings"
 
 )
-
+// singledigits is a map where keys represent single digits
+//  as a string type and values represent them in type int
 var singledigits = map[string]int{
 	"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
 }
 
+// Eval provides evaluation of input string representing an expression 
+// and returns result of mathematical operations
 func Eval(input string) (int, error) {
 	exp := expression{}
 

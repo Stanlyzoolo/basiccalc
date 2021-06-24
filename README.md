@@ -17,5 +17,5 @@ Another example with a more complex expression:
 ```golang
     input := "2+1 -  2"
     Eval(input)  
-    // Output: 2
+    // Output: 1
 ```  

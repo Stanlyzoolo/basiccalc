@@ -6,12 +6,12 @@ You can give input string representing an expression to ```Eval``` function and 
 
 For instance:
 
-```input := "1+1"```
-```Eval(input)```
-```// Output: 2```
+```input := "1+1"```  
+```Eval(input)```  
+```// Output: 2```  
 
 Another example with a more complex expression:
 
-```input := "2+1 -  2"```
-```Eval(input)```
-```// Output: 2```
+```input := "2+1 -  2"```  
+```Eval(input)```  
+```// Output: 2```  

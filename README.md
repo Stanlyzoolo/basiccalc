@@ -1,4 +1,4 @@
-###**Golang calculator**
+### **Golang calculator**
 
 Basic calculator provides a primitive implementation of a calculator for evaluating simple expressions consisting of single digits and mathematical addition and subtraction operators.
 
@@ -6,12 +6,16 @@ You can give input string representing an expression to ```Eval``` function and 
 
 For instance:
 
-```input := "1+1"```  
-```Eval(input)```  
-```// Output: 2```  
+```golang
+    input := "1+1"  
+    Eval(input) 
+    // Output: 2`
+```  
 
 Another example with a more complex expression:
 
-```input := "2+1 -  2"```  
-```Eval(input)```  
-```// Output: 2```  
+```golang
+    input := "2+1 -  2"
+    Eval(input)  
+    // Output: 2
+```  

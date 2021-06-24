@@ -1,4 +1,4 @@
-### **Golang calculator**
+### **Basic calculator Golang module**
 
 Basic calculator provides a primitive implementation of a calculator for evaluating simple expressions consisting of single digits and mathematical addition and subtraction operators.
 

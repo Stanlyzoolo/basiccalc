@@ -145,7 +145,7 @@ func (t token) Type() {
 type tokener interface {
 	Operand()
 	Operator()
-	Empty()
+	Space()
 }
 
 // Здесь реализовал методы, которые четко определяют, в моем понимании, какой токен
@@ -161,7 +161,7 @@ func (tk token) Operator(op Action) token {
 	return token{op: op}
 }
 
-func (tk token) Empty(r rune) token {
+func (tk token) Space(r rune) token {
 	return token{r: r}
 }
 
@@ -182,7 +182,7 @@ func Factory(r rune) token {
 
 	// просто вернуть пустой токен или тип - пустой токен
 	if unicode.IsSpace(r) {
-		return tk.Empty(r)
+		return tk.Space(r)
 	}
 	return tk
 

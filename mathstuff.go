@@ -141,11 +141,10 @@ func (t token) Type() {
 	// здесь пока не разобрался
 }
 
-
 // Интерфейс для token
 type tokener interface {
 	Operand()
-	Operation()
+	Operator()
 	Empty()
 }
 
@@ -158,7 +157,7 @@ func (tk token) Operand(val int) token {
 	return token{val: val}
 }
 
-func (tk token) Operation(op Action) token {
+func (tk token) Operator(op Action) token {
 	return token{op: op}
 }
 
@@ -178,7 +177,7 @@ func Factory(r rune) token {
 	op, ok := operators[r]
 
 	if ok {
-		return tk.Operation(op)
+		return tk.Operator(op)
 	}
 
 	// просто вернуть пустой токен или тип - пустой токен

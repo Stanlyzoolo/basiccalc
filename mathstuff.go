@@ -143,7 +143,7 @@ func (t token) Type() {
 
 
 // Интерфейс для token
-type Tokener interface {
+type tokener interface {
 	Operand()
 	Operation()
 	Empty()

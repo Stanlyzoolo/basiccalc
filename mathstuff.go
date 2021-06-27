@@ -134,18 +134,25 @@ type token struct {
 	op  Action
 }
 
-
 func (t token) Type() {
 
-	
 	// определиться с поведением и что возвращает
+
+	// здесь пока не разобрался
 }
 
+
+// Интерфейс для token
 type Tokener interface {
-	Operand() 
-	Operation() 
-	Empty() 
+	Operand()
+	Operation()
+	Empty()
 }
+
+// Здесь реализовал методы, которые четко определяют, в моем понимании, какой токен
+// возвращается из TokenFactory
+
+// Далее, соответствующие выходные токены надо передать в SetArgument и SetOperator
 
 func (t token) Operand(val int) token {
 	return token{val: val}

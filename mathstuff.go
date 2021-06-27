@@ -166,7 +166,7 @@ func (t token) Empty(r rune) token {
 	return token{r: r}
 }
 
-func TokenFactory(r rune) token {
+func Factory(r rune) token {
 	var t token
 
 	val, ok := singledigits[r]

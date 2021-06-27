@@ -85,13 +85,17 @@ func (exp *expression) Calculate() (int, error) {
 }
 
 func (exp *expression) SetToken(tk token) (int, error) {
-
+	var result int
 	// Начинается проверка типа токена
 
 	if tk.tokentype == OPERAND {
 		err := exp.SetArgument(tk.val)
 		if err != nil {
 			return 0, err
+		}
+
+		if exp.IsReady() {
+			result, _ = exp.Calculate()
 		}
 	}
 
@@ -102,40 +106,27 @@ func (exp *expression) SetToken(tk token) (int, error) {
 		}
 	}
 
-	// И так далее
-
-
-
-	
-
-	// if r == ' ' {
-	// 	continue
-	// }
-	// arg, isDigit := singledigits[r]
-
-	// if isDigit {
-
-	// 	err := exp.SetArgument(arg)
-	// 	if err != nil {
-	// 		return 0, err
-	// 	}
-
-	// 	if exp.IsReady() {
-	// 		result, _ = exp.Calculate()
-	// 	}
-	// 	continue
-	// }
-
-	// fn, isfn := operators[r]
-
-	// if isfn {
-	// 	operatorError := exp.SetOperator(fn)
-	// 	if operatorError != nil {
-	// 		return 0, fmt.Errorf("%s at position %v", operatorError, i)
-	// 	}
-	// 	continue
-	// }
+	return result, nil
 }
+
+// И так далее
+
+// if isDigit {
+
+// 	err := exp.SetArgument(arg)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// fn, isfn := operators[r]
+
+// if isfn {
+// 	operatorError := exp.SetOperator(fn)
+// 	if operatorError != nil {
+// 		return 0, fmt.Errorf("%s at position %v", operatorError, i)
+// 	}
+// 	continue
+// }
 
 // singledigits is a map where keys represent single digits
 //  as a string type and values represent them in type int
@@ -163,12 +154,12 @@ func (t token) Type() {
 	// здесь пока не разобрался
 }
 
-// Интерфейс для token
-type tokener interface {
-	Operand()
-	Operator()
-	Space()
-}
+// // Интерфейс для token
+// type tokener interface {
+// 	Operand()
+// 	Operator()
+// 	Space()
+// }
 
 // Здесь реализовал методы, которые четко определяют, в моем понимании, какой токен
 // возвращается из TokenFactory

@@ -86,83 +86,99 @@ func (exp *expression) Calculate() (int, error) {
 
 func (exp *expression) SetToken(tk token) (int, error) {
 
+	// Начинается проверка типа токена
+
+	err := exp.SetArgument(FirstArgWithOperator)
+	if err != nil {
+		return 0, err
+	}
+
 	// if r == ' ' {
 	// 	continue
 	// }
 	// arg, isDigit := singledigits[r]
 
-	for tk := range TokenFactory() {
-		
-	}
-	// Просится цикл for потому что токенов будет минимум 3 для одного действия
-	arg := tk.i
+	// if isDigit {
 
+	// 	err := exp.SetArgument(arg)
+	// 	if err != nil {
+	// 		return 0, err
+	// 	}
 
-	err := exp.SetArgument(arg)
-	if err != nil {
-		return 0, err
-	}
+	// 	if exp.IsReady() {
+	// 		result, _ = exp.Calculate()
+	// 	}
+	// 	continue
+	// }
 
+	// fn, isfn := operators[r]
 
-
-
-	if isDigit {
-
-		err := exp.SetArgument(arg)
-		if err != nil {
-			return 0, err
-		}
-
-		if exp.IsReady() {
-			result, _ = exp.Calculate()
-		}
-		continue
-	}
-
-	fn, isfn := operators[r]
-
-	if isfn {
-		operatorError := exp.SetOperator(fn)
-		if operatorError != nil {
-			return 0, fmt.Errorf("%s at position %v", operatorError, i)
-		}
-		continue
-	}
+	// if isfn {
+	// 	operatorError := exp.SetOperator(fn)
+	// 	if operatorError != nil {
+	// 		return 0, fmt.Errorf("%s at position %v", operatorError, i)
+	// 	}
+	// 	continue
+	// }
 }
 
-type token struct {
-	r rune
-	i int
-	op Action
-}
 // singledigits is a map where keys represent single digits
 //  as a string type and values represent them in type int
 var singledigits = map[rune]int{
 	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
 }
 
+type token struct {
+	r   rune
+	val int
+	op  Action
+}
+
+
+func (t token) Type() {
+
+	
+	// определиться с поведением и что возвращает
+}
+
+type Tokener interface {
+	Operand() 
+	Operation() 
+	Empty() 
+}
+
+func (t token) Operand(val int) token {
+	return token{val: val}
+}
+
+func (t token) Operation(op Action) token {
+	return token{op: op}
+}
+
+func (t token) Empty(r rune) token {
+	return token{r: r}
+}
+
 func TokenFactory(r rune) token {
+	var t token
 
-	var tk = token{r: r}
+	val, ok := singledigits[r]
 
-	if unicode.IsDigit(r) {
-		tk.i = singledigits[r]
+	if ok {
+		return t.Operand(val)
 	}
 
-	if unicode.IsSymbol(r) {
-		// Что делать с символами?
-		tk.op = operators[r]
+	op, ok := operators[r]
+
+	if ok {
+		return t.Operation(op)
 	}
 
+	// просто вернуть пустой токен или тип - пустой токен
 	if unicode.IsSpace(r) {
-		// как обходим пробелы?
-	} 
-
-	return tk
-
-	// функция принимающая руну и возвращающая токен
-
-	// почитать про шаблон проектирования - фабрика
+		return t.Empty(r)
+	}
+	return t
 
 }
 

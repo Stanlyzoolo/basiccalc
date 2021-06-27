@@ -88,10 +88,25 @@ func (exp *expression) SetToken(tk token) (int, error) {
 
 	// Начинается проверка типа токена
 
-	err := exp.SetArgument(FirstArgWithOperator)
-	if err != nil {
-		return 0, err
+	if tk.tokentype == OPERAND {
+		err := exp.SetArgument(tk.val)
+		if err != nil {
+			return 0, err
+		}
 	}
+
+	if tk.tokentype == OPERATOR {
+		err := exp.SetOperator(tk.op)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	// И так далее
+
+
+
+	
 
 	// if r == ' ' {
 	// 	continue

@@ -154,38 +154,38 @@ type tokener interface {
 
 // Далее, соответствующие выходные токены надо передать в SetArgument и SetOperator
 
-func (t token) Operand(val int) token {
+func (tk token) Operand(val int) token {
 	return token{val: val}
 }
 
-func (t token) Operation(op Action) token {
+func (tk token) Operation(op Action) token {
 	return token{op: op}
 }
 
-func (t token) Empty(r rune) token {
+func (tk token) Empty(r rune) token {
 	return token{r: r}
 }
 
 func Factory(r rune) token {
-	var t token
+	var tk token
 
 	val, ok := singledigits[r]
 
 	if ok {
-		return t.Operand(val)
+		return tk.Operand(val)
 	}
 
 	op, ok := operators[r]
 
 	if ok {
-		return t.Operation(op)
+		return tk.Operation(op)
 	}
 
 	// просто вернуть пустой токен или тип - пустой токен
 	if unicode.IsSpace(r) {
-		return t.Empty(r)
+		return tk.Empty(r)
 	}
-	return t
+	return tk
 
 }
 

@@ -128,10 +128,17 @@ var singledigits = map[rune]int{
 	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
 }
 
+const (
+	OPERAND  = "operand"
+	OPERATOR = "operator"
+	SPACE    = "space"
+)
+
 type token struct {
-	r   rune
-	val int
-	op  Action
+	r         rune
+	val       int
+	op        Action
+	tokentype string
 }
 
 func (t token) Type() {
@@ -154,15 +161,15 @@ type tokener interface {
 // Далее, соответствующие выходные токены надо передать в SetArgument и SetOperator
 
 func (tk token) Operand(val int) token {
-	return token{val: val}
+	return token{val: val, tokentype: OPERAND}
 }
 
 func (tk token) Operator(op Action) token {
-	return token{op: op}
+	return token{op: op, tokentype: OPERATOR}
 }
 
 func (tk token) Space(r rune) token {
-	return token{r: r}
+	return token{r: r, tokentype: SPACE}
 }
 
 func Factory(r rune) token {
@@ -180,7 +187,6 @@ func Factory(r rune) token {
 		return tk.Operator(op)
 	}
 
-	// просто вернуть пустой токен или тип - пустой токен
 	if unicode.IsSpace(r) {
 		return tk.Space(r)
 	}

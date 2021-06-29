@@ -5,10 +5,10 @@ import (
 	. "github.com/Stanlyzoolo/basiccalc"
 )
 
-var input string = "2+1"
+var input string = "2+1 +1"
 
 func TestEval(t *testing.T) {
-	want := 3
+	want := 4
 
 	got, err := Eval(input)
 	if got != want {

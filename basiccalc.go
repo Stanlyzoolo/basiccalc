@@ -7,6 +7,10 @@ import (
 	"fmt"
 )
 
+// evalError ...
+func evalError(cause error, p int) error {
+	return fmt.Errorf("%s at position %v", cause, p)
+}
 
 // Eval provides evaluation of input string representing an expression
 // and returns result of mathematical operations
@@ -16,16 +20,17 @@ func Eval(input string) (int, error) {
 	var result int
 	var err error
 
-	//  проблема большого тела цикла
+	for p, r := range input {
 
-	for _, r := range input {
+		tk, err := tokenFactory(r)
+		if err != nil {
+			return 0, evalError(err, p)
+		}
 
-		tk := Factory(r)
-
-		result, err = exp.SetToken(tk)
+		result, err = exp.setToken(tk)
 
 		if err != nil {
-			fmt.Println("Something went wrong")
+			return 0, evalError(err, p)
 		}
 	}
 	return result, err

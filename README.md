@@ -19,3 +19,15 @@ Another example with a more complex expression:
     Eval(input)  
     // Output: 1
 ```  
+
+
+Given a string s representing an expression, implement a basic calculator to evaluate it.
+Expression consists of single digits (like '2', '7' etc), `'+'`, `'-'` and `' '`
+
+Example 1:
+Input: s = "1 + 1"
+Output: 2
+
+Example 2:
+Input: s = " 2-1 + 2 "
+Output: 3

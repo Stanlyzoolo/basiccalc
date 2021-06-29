@@ -6,48 +6,75 @@ import (
 )
 
 func TestSetArgument(t *testing.T) {
-	testTable := map[int]error{Initialized: nil, FirstArgument: errors.New("fail state FirstArgument"), FirstArgWithOperator: nil, Ready: errors.New("fail state Ready")}
-
-	for s, e := range testTable {
-		expr := expression{state: s}
-
-		err := expr.SetArgument(2)
-
-		if e == nil && err != nil {
-			t.Error("failed SetArgument; want err = nil, got err != nil")
-		}
-
+	
+	testTable := map[int]bool{
+		Initialized: true, 
+		FirstArgument: false,
+		FirstArgWithOperator: true,
 	}
 
+	// any int value
+	var arg int = 2
+
+	for s, ok := range testTable {
+		expr := &expression{state: s}
+
+		result, err := expr.setArgument(arg)
+
+		if ok && err != nil {
+			t.Error(result, "failed SetArgument; want err = nil, got err != nil")
+		}
+	}
 }
 
 func TestSetOperator(t *testing.T) {
 
-	testTable := map[int]error{Initialized: errors.New("fail state Initialized"), FirstArgument: nil, FirstArgWithOperator: errors.New("fail state FirstArgWithOperator"), Ready: errors.New("fail state Ready")}
+	testTable := map[int]error{Initialized: errors.New("fail state Initialized"), FirstArgument: nil, FirstArgWithOperator: errors.New("fail state FirstArgWithOperator")}
 
 	for s, e := range testTable {
 		expr := expression{state: s}
 
-		err := expr.SetOperator(func(int, int) int { return 0 })
+		result, err := expr.setOperator(func(int, int) int { return 0 })
 
 		if e == nil && err != nil {
-			t.Error("failed SetOperator; want err = nil, got err != nil")
+			t.Error(result, "failed SetOperator; want err = nil, got err != nil")
 		}
 	}
 
 }
 
-func TestCalculate(t *testing.T) {
+func TestTokenFactory(t *testing.T) {
+	wantArg := tokenOperand{token: token{r: '5'}, val: 5}
 
-	testTable := map[int]error{Initialized: errors.New("fail state Initialized"), FirstArgument: errors.New("fail state Ready"), FirstArgWithOperator: errors.New("fail state FirstArgWithOperator"), Ready: nil}
+	var rArg rune = '5'
 
-	for s, e := range testTable {
-		expr := expression{state: s}
-		want := 4
-		got, err := expr.Calculate()
+	gotArg, errArg := tokenFactory(rArg)
 
-		if e == nil && err != nil && got != want {
-			t.Error("failed Calculate; want err = nil, got err != nil")
-		}
+	if gotArg != wantArg && errArg != nil {
+		t.Error("unexpected operand token")
 	}
+
+
+	// wantOp := tokenOperator{token: token{r: '+'}, op: func(x, y int) int { return x + y }}
+
+	// var rOp rune = '+'
+
+	// gotOp, errOp := tokenFactory(rOp)
+	// if gotOp != wantOp && errOp != nil {		//Trouble
+	// 	t.Error("unexpected operator token")
+	// }
+
+	var rSpace rune = ' '
+	wantSpace := tokenSpace{token: token{r: rSpace}}
+
+	gotSpace, errSpace := tokenFactory(rSpace)
+
+	if gotSpace != wantSpace && errSpace != nil {
+		t.Error("unexpected space token")
+	} 
+	
+}
+
+func TestSetToken(t *testing.T) {
+
 }

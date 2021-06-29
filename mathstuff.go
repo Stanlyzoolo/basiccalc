@@ -2,16 +2,15 @@ package basiccalc
 
 import (
 	"errors"
-	"unicode"
 )
 
-// Action type is a simple function for performing simple mathematical
+// action type is a simple function for performing simple mathematical
 //  operations depending on the operator
-type Action func(int, int) int
+type action func(int, int) int
 
 // operators is a map where keys represent mathematical operators as a string
 //  type and values represent the corresponding function
-var operators = map[rune]Action{
+var operators = map[rune]action{
 	'+': func(x, y int) int { return x + y },
 	'-': func(x, y int) int { return x - y },
 }
@@ -20,7 +19,7 @@ var operators = map[rune]Action{
 //  an operator and a state of fullness of the structure
 type expression struct {
 	x, y       int
-	evaluation Action
+	evaluation action
 	state      int
 }
 
@@ -30,103 +29,100 @@ const (
 	Initialized int = iota
 	FirstArgument
 	FirstArgWithOperator
-	Ready
 )
 
-// isReady is a method to check the fullness of expression structure
-// by comparing its state
-func (exp *expression) IsReady() bool {
-	return exp.state == Ready
-}
-
-// SetArgument is a method that  takes an argument type int, checks current
+// setArgument is a method that  takes an argument type int, checks current
 // state of the structure, assigns its value to the corresponding field
 // and returns an error
-func (exp *expression) SetArgument(arg int) error {
+func (exp *expression) setArgument(arg int) (int, error) {
+
 	if exp.state == Initialized {
 		exp.x = arg
-		exp.state = FirstArgument
-		return nil
-	}
-
-	if exp.state == FirstArgWithOperator {
-		exp.y = arg
-		exp.state = Ready
-		return nil
-	}
-
-	return errors.New("unexpected argument")
-}
-
-// SetOperator is a method that takes an argument type Action, checks current
-// state of the structure, assigns its value – function from operators map
-// to the evaluation field and returns an error
-func (exp *expression) SetOperator(fn Action) error {
-	if exp.state == FirstArgument {
-		exp.evaluation = fn
-		exp.state = FirstArgWithOperator
-		return nil
-	}
-
-	return errors.New("unexpected operator")
-}
-
-// Calculate is a method that checks the current state of the structure,
-//  performs a mathematical operation according to function in the evaluation field,
-// assigns its value to the first field, and returns an error
-func (exp *expression) Calculate() (int, error) {
-	if exp.state == Ready {
-		exp.x = exp.evaluation(exp.x, exp.y)
 		exp.state = FirstArgument
 		return exp.x, nil
 	}
 
-	return 0, errors.New("invalid expression")
-}
-
-func (exp *expression) SetToken(tk token) (int, error) {
-	var result int
-	// Начинается проверка типа токена
-
-	if tk.tokentype == OPERAND {
-		err := exp.SetArgument(tk.val)
-		if err != nil {
-			return 0, err
-		}
-
-		if exp.IsReady() {
-			result, _ = exp.Calculate()
-		}
+	if exp.state == FirstArgWithOperator {
+		exp.x = exp.evaluation(exp.x, arg)
+		exp.state = FirstArgument
+		return exp.x, nil
 	}
 
-	if tk.tokentype == OPERATOR {
-		err := exp.SetOperator(tk.op)
-		if err != nil {
-			return 0, err
-		}
-	}
-
-	return result, nil
+	return exp.x, errors.New("unexpected argument")
 }
 
-// И так далее
+// setOperator is a method that takes an argument type Action, checks current
+// state of the structure, assigns its value – function from operators map
+// to the evaluation field and returns an error
+func (exp *expression) setOperator(fn action) (int, error) {
+	if exp.state == FirstArgument {
+		exp.evaluation = fn
+		exp.state = FirstArgWithOperator
+		return exp.x, nil
+	}
 
-// if isDigit {
+	return exp.x, errors.New("unexpected operator")
+}
 
-// 	err := exp.SetArgument(arg)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+type token struct {
+	r    rune
+	kind int
+}
 
-// fn, isfn := operators[r]
+// Getter...
+func (t token) Type() int {
+	return t.kind
+}
 
-// if isfn {
-// 	operatorError := exp.SetOperator(fn)
-// 	if operatorError != nil {
-// 		return 0, fmt.Errorf("%s at position %v", operatorError, i)
-// 	}
-// 	continue
-// }
+// Getter...
+func (t token) Rune() rune {
+	return t.r
+}
+
+type tokener interface {
+	Rune() rune
+}
+
+type tokenOperand struct {
+	token
+	val int
+}
+
+// Getter...
+func (t tokenOperand) Value() int {
+	return t.val
+}
+
+type valuer interface {
+	Value() int
+}
+
+type tokenOperator struct {
+	token
+	op action
+}
+
+// Getter...
+func (t tokenOperator) Operator() action {
+	return t.op
+}
+
+type operatorer interface {
+	Operator() action
+}
+
+type tokenSpace struct {
+	token
+}
+
+// Compare method
+func (t tokenSpace) isSpace() bool {
+	return true
+}
+
+type spacer interface {
+	isSpace() bool
+}
 
 // singledigits is a map where keys represent single digits
 //  as a string type and values represent them in type int
@@ -134,72 +130,36 @@ var singledigits = map[rune]int{
 	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
 }
 
-const (
-	OPERAND  = "operand"
-	OPERATOR = "operator"
-	SPACE    = "space"
-)
+func tokenFactory(r rune) (tokener, error) {
 
-type token struct {
-	r         rune
-	val       int
-	op        Action
-	tokentype string
-}
-
-func (t token) Type() {
-
-	// определиться с поведением и что возвращает
-
-	// здесь пока не разобрался
-}
-
-// // Интерфейс для token
-// type tokener interface {
-// 	Operand()
-// 	Operator()
-// 	Space()
-// }
-
-// Здесь реализовал методы, которые четко определяют, в моем понимании, какой токен
-// возвращается из TokenFactory
-
-// Далее, соответствующие выходные токены надо передать в SetArgument и SetOperator
-
-func (tk token) Operand(val int) token {
-	return token{val: val, tokentype: OPERAND}
-}
-
-func (tk token) Operator(op Action) token {
-	return token{op: op, tokentype: OPERATOR}
-}
-
-func (tk token) Space(r rune) token {
-	return token{r: r, tokentype: SPACE}
-}
-
-func Factory(r rune) token {
-	var tk token
-
-	val, ok := singledigits[r]
-
-	if ok {
-		return tk.Operand(val)
+	if val, ok := singledigits[r]; ok {
+		return tokenOperand{token: token{r: r}, val: val}, nil // почитать документацию о литералах для встроенных типах
 	}
 
-	op, ok := operators[r]
-
-	if ok {
-		return tk.Operator(op)
+	if op, ok := operators[r]; ok {
+		return tokenOperator{token: token{r: r}, op: op}, nil
 	}
 
-	if unicode.IsSpace(r) {
-		return tk.Space(r)
+	if r == ' ' {
+		return tokenSpace{token: token{r: r}}, nil
 	}
-	return tk
 
+	return token{}, errors.New("unexpected token")
 }
 
-// почитать про токены
+func (exp *expression) setToken(t tokener) (int, error) {
 
-// почитать статью https://ruslanspivak.com/lsbasi-part1/
+	if tv, ok := t.(valuer); ok {
+		return exp.setArgument(tv.Value())
+	}
+
+	if to, ok := t.(operatorer); ok {
+		return exp.setOperator(to.Operator())
+	}
+
+	if _, ok := t.(spacer); ok {
+		return exp.x, nil
+	}
+
+	return exp.x, errors.New("unexpected token")
+}

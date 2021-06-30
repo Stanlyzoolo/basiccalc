@@ -6,19 +6,22 @@ import (
 )
 
 func TestSetArgument(t *testing.T) {
-	
+
 	testTable := map[int]bool{
-		Initialized: true, 
-		FirstArgument: false,
+		Initialized:          true,
+		FirstArgument:        false,
 		FirstArgWithOperator: true,
 	}
 
 	// any int value
 	var arg int = 2
 
-	for s, ok := range testTable {
-		expr := &expression{state: s}
+	expr := expression{
+		evaluation: func(x, y int) int { return x + y },
+	}
 
+	for s, ok := range testTable {
+		expr.state = s
 		result, err := expr.setArgument(arg)
 
 		if ok && err != nil {
@@ -29,7 +32,11 @@ func TestSetArgument(t *testing.T) {
 
 func TestSetOperator(t *testing.T) {
 
-	testTable := map[int]error{Initialized: errors.New("fail state Initialized"), FirstArgument: nil, FirstArgWithOperator: errors.New("fail state FirstArgWithOperator")}
+	testTable := map[int]error{
+		Initialized:          errors.New("fail state Initialized"),
+		FirstArgument:        nil,
+		FirstArgWithOperator: errors.New("fail state FirstArgWithOperator"),
+	}
 
 	for s, e := range testTable {
 		expr := expression{state: s}
@@ -43,38 +50,55 @@ func TestSetOperator(t *testing.T) {
 
 }
 
+func detectType(t tokener) int {
+	switch t.(type) {
+	case tokenOperand:
+		return 0
+	case tokenOperator:
+		return 1
+	case tokenSpace:
+		return 2
+	default:
+		return 3
+	}
+}
+
 func TestTokenFactory(t *testing.T) {
-	wantArg := tokenOperand{token: token{r: '5'}, val: 5}
 
-	var rArg rune = '5'
-
-	gotArg, errArg := tokenFactory(rArg)
-
-	if gotArg != wantArg && errArg != nil {
-		t.Error("unexpected operand token")
+	testTable := map[rune]tokener{
+		'2': tokenOperand{token: token{r: '2'}, val: 2},
+		'+': tokenOperator{token: token{r: '+'}, op: func(x, y int) int { return x + y }},
+		' ': tokenSpace{token: token{r: ' '}},
+		'*': token{},
 	}
 
+	for r, want := range testTable {
 
-	// wantOp := tokenOperator{token: token{r: '+'}, op: func(x, y int) int { return x + y }}
+		got, err := tokenFactory(r)
 
-	// var rOp rune = '+'
-
-	// gotOp, errOp := tokenFactory(rOp)
-	// if gotOp != wantOp && errOp != nil {		//Trouble
-	// 	t.Error("unexpected operator token")
-	// }
-
-	var rSpace rune = ' '
-	wantSpace := tokenSpace{token: token{r: rSpace}}
-
-	gotSpace, errSpace := tokenFactory(rSpace)
-
-	if gotSpace != wantSpace && errSpace != nil {
-		t.Error("unexpected space token")
-	} 
-	
+		if detectType(got) != detectType(want) && err != nil {
+			t.Error("failed tokenFactory; want err = nil, got err != nil")
+		}
+	}
 }
 
-func TestSetToken(t *testing.T) {
+func TestRune(t *testing.T) {
+	var want rune = '1'
 
+	tk := token{r: want}
+
+	if tk.Rune() != want {
+		t.Error("failed token.Rune()")
+	}
 }
+
+func TestValue(t *testing.T) {
+	var want int = 1
+
+	tk := tokenOperand{val: want}
+
+	if tk.Value() != want {
+		t.Error("failed tokenOperand.Value()")
+	}
+}
+

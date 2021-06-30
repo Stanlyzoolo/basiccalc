@@ -133,7 +133,7 @@ var singledigits = map[rune]int{
 func tokenFactory(r rune) (tokener, error) {
 
 	if val, ok := singledigits[r]; ok {
-		return tokenOperand{token: token{r: r}, val: val}, nil // почитать документацию о литералах для встроенных типах
+		return tokenOperand{token: token{r: r}, val: val}, nil 
 	}
 
 	if op, ok := operators[r]; ok {

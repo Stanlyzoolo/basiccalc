@@ -18,7 +18,6 @@ func Eval(input string) (int, error) {
 	exp := expression{}
 
 	var result int
-	var err error
 
 	for p, r := range input {
 
@@ -27,12 +26,8 @@ func Eval(input string) (int, error) {
 			return 0, evalError(err, p)
 		}
 
-		result, err = exp.setToken(tk)
+		result, _ = exp.setToken(tk)
 
-		if err != nil {
-			return 0, evalError(err, p)
-		}
 	}
-	return result, err
+	return result, nil
 }
- 

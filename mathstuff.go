@@ -144,7 +144,7 @@ func tokenFactory(r rune) (tokener, error) {
 		return tokenSpace{token: token{r: r}}, nil
 	}
 
-	return token{}, errors.New("unexpected token")
+	return token{}, errors.New("unexpected token in tokenFactory")
 }
 
 func (exp *expression) setToken(t tokener) (int, error) {
@@ -161,5 +161,5 @@ func (exp *expression) setToken(t tokener) (int, error) {
 		return exp.x, nil
 	}
 
-	return exp.x, errors.New("unexpected token")
+	return exp.x, errors.New("unexpected token in setToken()")
 }

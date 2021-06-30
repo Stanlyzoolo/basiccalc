@@ -82,6 +82,18 @@ func TestTokenFactory(t *testing.T) {
 	}
 }
 
+func TestSetToken(t *testing.T) {
+	expr := expression{}
+	tBad := token{r: '*'}
+
+	_, err := expr.setToken(tBad)
+
+	if err == nil {
+		t.Error("failed tokenFactory; want err = nil, got err != nil")
+	}
+
+}
+
 func TestRune(t *testing.T) {
 	var want rune = '1'
 
@@ -101,4 +113,3 @@ func TestValue(t *testing.T) {
 		t.Error("failed tokenOperand.Value()")
 	}
 }
-

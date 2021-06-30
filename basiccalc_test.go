@@ -16,9 +16,10 @@ func TestEval(t *testing.T) {
 		t.Error("Something went wrong", err)
 	}
 
-	inputS := "2+*"
-	_, erro := Eval(inputS)
-	if erro != nil {
-		t.Error("Something went wrong", erro)
+	input = "2+*"
+	_, err2 := Eval(input)
+
+	if err2 == nil {
+		t.Error("Something went wrong", err2)
 	}
 }

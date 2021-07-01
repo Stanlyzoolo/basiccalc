@@ -113,3 +113,11 @@ func TestValue(t *testing.T) {
 		t.Error("failed tokenOperand.Value()")
 	}
 }
+
+
+// func BenchmarkEval3(b *testing.B) {
+// 	input := "2+1"
+// 	for n:=0; n < b.N; n++ {
+// 		Eval(input)
+// 	}
+// }

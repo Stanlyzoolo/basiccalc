@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-// evalError ...
+// evalError wrap cause error for more context
 func evalError(cause error, p int) error {
 	return fmt.Errorf("%s at position %v", cause, p)
 }

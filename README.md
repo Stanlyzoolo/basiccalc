@@ -7,7 +7,7 @@ receive expected result.
 
 ### Installation
 
-Use the command above to install module:
+Use the command below to install module:
 
 ```golang
 go get -u github.com/Stanlyzoolo/basiccalc

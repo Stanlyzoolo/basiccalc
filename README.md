@@ -1,4 +1,4 @@
-### **Basic calculator**
+### Basic calculator
 
 Basic calculator provides a primitive implementation of a calculator for evaluating simple expressions consisting of single digits and mathematical addition and subtraction operators.
 
@@ -16,7 +16,7 @@ go get -u github.com/Stanlyzoolo/basiccalc
 ### Usage
 
 Given a string `s` representing an expression, implement a basic calculator to evaluate it.  
-Expression consists of single digits (like '2', '7' etc.), `'+'`, `'-'` and `' '`
+Expression consists of single digits (like `'2'`, `'7'` etc.), `'+'`, `'-'` and `' '` (space).
 
 Example 1:
 
@@ -24,18 +24,18 @@ Example 1:
     // Input
     s := "1+1"
 
-    Eval(s)
+    fmt.Println(Eval(s))
     // Output: 2`
 ```
 
-Example 2 (more complex expression with spaces):
+Example 2 (more complex expression with spaces `' '`):
 
 ```golang
     // Input
     s := "2-1 + 2"
 
-    Eval(s)
-    // Output: 1
+    fmt.Println(Eval(s))
+    // Output: 3
 ```
 
 ### Contributors

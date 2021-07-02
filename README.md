@@ -10,7 +10,7 @@ receive expected result.
 Use the command below to install module:
 
 ```golang
-go get -u github.com/Stanlyzoolo/basiccalc
+go get -u github.com/stanlyzoolo/basiccalc
 ```
 
 ### Usage

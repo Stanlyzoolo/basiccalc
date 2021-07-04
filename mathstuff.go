@@ -32,7 +32,7 @@ const (
 )
 
 // setArgument takes an argument, checks current
-// state of the structure and assigns its value to the corresponding field
+// state of the structure and assigns its value to the corresponding field.
 func (e *expression) setArgument(arg int) (int, error) {
 
 	if e.state == Initialized {
@@ -52,7 +52,7 @@ func (e *expression) setArgument(arg int) (int, error) {
 
 // setOperator takes action type function, checks current
 // state of the structure and assigns its value – function from operators map
-// to the evaluation field
+// to the evaluation field.
 func (e *expression) setOperator(fn action) (int, error) {
 	if e.state == FirstArgument {
 		e.evaluation = fn
@@ -84,7 +84,7 @@ type tokener interface {
 	Rune() rune
 }
 
-// A tokenOperand implements operand by embedding token type
+// A tokenOperand implements operand by embedding token type.
 type tokenOperand struct {
 	token
 	val int
@@ -152,7 +152,7 @@ func tokenFactory(r rune) (tokener, error) {
 		return tokenSpace{token: token{r: r}}, nil
 	}
 
-	return token{}, errors.New("unexpected token in tokenFactory")
+	return token{}, errors.New("unexpected token in tokenFactory()")
 }
 
 // setToken processes tokener interfaces by cheking its type

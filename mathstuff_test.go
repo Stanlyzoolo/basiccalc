@@ -25,7 +25,7 @@ func TestSetArgument(t *testing.T) {
 		result, err := expr.setArgument(arg)
 
 		if ok && err != nil {
-			t.Error(result, "failed SetArgument; want err = nil, got err != nil")
+			t.Error(result, "failed SetArgument(); want err = nil, got err != nil")
 		}
 	}
 }
@@ -44,7 +44,7 @@ func TestSetOperator(t *testing.T) {
 		result, err := expr.setOperator(func(int, int) int { return 0 })
 
 		if e == nil && err != nil {
-			t.Error(result, "failed SetOperator; want err = nil, got err != nil")
+			t.Error(result, "failed SetOperator(); want err = nil, got err != nil")
 		}
 	}
 
@@ -77,7 +77,7 @@ func TestTokenFactory(t *testing.T) {
 		got, err := tokenFactory(r)
 
 		if detectType(got) != detectType(want) && err != nil {
-			t.Error("failed tokenFactory; want err = nil, got err != nil")
+			t.Error("failed tokenFactory(); want err = nil, got err != nil")
 		}
 	}
 }
@@ -89,7 +89,7 @@ func TestSetToken(t *testing.T) {
 	_, err := expr.setToken(tBad)
 
 	if err == nil {
-		t.Error("failed tokenFactory; want err = nil, got err != nil")
+		t.Error("failed tokenFactory(); want err = nil, got err != nil")
 	}
 
 }
@@ -111,5 +111,15 @@ func TestValue(t *testing.T) {
 
 	if tk.Value() != want {
 		t.Error("failed tokenOperand.Value()")
+	}
+}
+
+func TestType(t *testing.T) {
+	var want int = 2
+
+	tk := token{kind: want}
+
+	if tk.Type() != want {
+		t.Error("failed tokenOperand.Type()")
 	}
 }

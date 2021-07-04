@@ -7,13 +7,13 @@ import (
 	"fmt"
 )
 
-// evalError wrap cause error for more context
+// evalError wrap cause error for more context.
 func evalError(cause error, p int) error {
 	return fmt.Errorf("%s at position %v", cause, p)
 }
 
 // Eval provides evaluation of input string representing an expression
-// and returns result of mathematical operations
+// and returns result of mathematical operations.
 func Eval(input string) (int, error) {
 	exp := expression{}
 

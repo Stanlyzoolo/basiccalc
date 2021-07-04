@@ -1,8 +1,9 @@
 package basiccalc_test
 
 import (
-	. "github.com/Stanlyzoolo/basiccalc"
 	"testing"
+
+	. "github.com/Stanlyzoolo/basiccalc"
 )
 
 func TestEval(t *testing.T) {
@@ -11,14 +12,14 @@ func TestEval(t *testing.T) {
 
 	got, err := Eval(input)
 	if got != want {
-		t.Error("Something went wrong", err)
+		t.Errorf("failed Eval() with input  '%s'; %s of input expression; want err = nil, got err != nil", input, err)
 	}
 
 	input = "2+*"
 	_, err2 := Eval(input)
 
 	if err2 == nil {
-		t.Error("Something went wrong", err2)
+		t.Errorf("failed Eval() with input  '%s'; %s of input expression; want err = nil, got err != nil", input, err2)
 	}
 }
 

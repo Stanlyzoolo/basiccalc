@@ -25,7 +25,7 @@ func TestSetArgument(t *testing.T) {
 		result, err := expr.setArgument(arg)
 
 		if ok && err != nil {
-			t.Error(result, "failed SetArgument; want err = nil, got err != nil")
+			t.Error(result, "failed SetArgument(); want err = nil, got err != nil")
 		}
 	}
 }
@@ -44,19 +44,19 @@ func TestSetOperator(t *testing.T) {
 		result, err := expr.setOperator(func(int, int) int { return 0 })
 
 		if e == nil && err != nil {
-			t.Error(result, "failed SetOperator; want err = nil, got err != nil")
+			t.Error(result, "failed SetOperator(); want err = nil, got err != nil")
 		}
 	}
 
 }
 
-func detectType(t tokener) int {
-	switch t.(type) {
-	case tokenOperand:
+func detectType(t token) int {
+	switch t.kind {
+	case Operand:
 		return 0
-	case tokenOperator:
+	case Operator:
 		return 1
-	case tokenSpace:
+	case Space:
 		return 2
 	default:
 		return 3
@@ -65,11 +65,11 @@ func detectType(t tokener) int {
 
 func TestTokenFactory(t *testing.T) {
 
-	testTable := map[rune]tokener{
-		'2': tokenOperand{token: token{r: '2'}, val: 2},
-		'+': tokenOperator{token: token{r: '+'}, op: func(x, y int) int { return x + y }},
-		' ': tokenSpace{token: token{r: ' '}},
-		'*': token{},
+	testTable := map[rune]token{
+		'2': {r: '2', val: 2, kind: Operator},
+		'+': {r: '+', op: func(x, y int) int { return x + y }, kind: Operator},
+		' ': {r: ' ', kind: Space},
+		'*': {},
 	}
 
 	for r, want := range testTable {
@@ -77,19 +77,19 @@ func TestTokenFactory(t *testing.T) {
 		got, err := tokenFactory(r)
 
 		if detectType(got) != detectType(want) && err != nil {
-			t.Error("failed tokenFactory; want err = nil, got err != nil")
+			t.Error("failed tokenFactory(); want err = nil, got err != nil")
 		}
 	}
 }
 
 func TestSetToken(t *testing.T) {
 	expr := expression{}
-	tBad := token{r: '*'}
+	tBad := token{r: '*', kind: 4}
 
 	_, err := expr.setToken(tBad)
 
 	if err == nil {
-		t.Error("failed tokenFactory; want err = nil, got err != nil")
+		t.Error("failed tokenFactory(); want err = nil, got err != nil")
 	}
 
 }
@@ -107,9 +107,19 @@ func TestRune(t *testing.T) {
 func TestValue(t *testing.T) {
 	var want int = 1
 
-	tk := tokenOperand{val: want}
+	tk := token{val: want}
 
 	if tk.Value() != want {
 		t.Error("failed tokenOperand.Value()")
+	}
+}
+
+func TestType(t *testing.T) {
+	var want int = 2
+
+	tk := token{kind: want}
+
+	if tk.Type() != want {
+		t.Error("failed tokenOperand.Type()")
 	}
 }

@@ -6,7 +6,7 @@ import (
 
 // action represents a simple function for performing simple mathematical
 //  operations depending on the operator.
-type action func(int, int) int 
+type action func(int, int) int
 
 // operators is a map where keys represent mathematical operators as a string
 //  type and values represent the corresponding function.
@@ -32,7 +32,7 @@ const (
 )
 
 // setArgument takes an argument, checks current
-// state of the structure and assigns its value to the corresponding field
+// state of the structure and assigns its value to the corresponding field.
 func (e *expression) setArgument(arg int) (int, error) {
 
 	if e.state == Initialized {
@@ -52,7 +52,7 @@ func (e *expression) setArgument(arg int) (int, error) {
 
 // setOperator takes action type function, checks current
 // state of the structure and assigns its value – function from operators map
-// to the evaluation field
+// to the evaluation field.
 func (e *expression) setOperator(fn action) (int, error) {
 	if e.state == FirstArgument {
 		e.evaluation = fn
@@ -63,15 +63,19 @@ func (e *expression) setOperator(fn action) (int, error) {
 	return e.x, errors.New("unexpected operator")
 }
 
+// Constants describe types of arguments for the expression.
+const (
+	Operand int = iota
+	Operator
+	Space
+)
+
 // token represents a type for setting arguments and operators.
 type token struct {
 	r    rune
+	val  int
+	op   action
 	kind int
-}
-
-// Type gets the value of the kind field.
-func (t token) Type() int {
-	return t.kind
 }
 
 // Rune gets the value of the r field.
@@ -79,56 +83,24 @@ func (t token) Rune() rune {
 	return t.r
 }
 
-// tokener represents Rune() getter.
-type tokener interface {
-	Rune() rune
-}
-
-// A tokenOperand implements operand by embedding token type
-type tokenOperand struct {
-	token
-	val int
-}
-
 // Value gets the value of the val field.
-func (t tokenOperand) Value() int {
+func (t token) Value() int {
 	return t.val
 }
 
-// valuer represents Value() getter.
-type valuer interface {
-	Value() int
-}
-
-// A tokenOperator implements operator by embedding token type.
-type tokenOperator struct {
-	token
-	op action
-}
-
 // Operator gets the value of the op field.
-func (t tokenOperator) Operator() action {
+func (t token) Operator() action {
 	return t.op
 }
 
-// operatorer represents Operator() getter.
-type operatorer interface {
-	Operator() action
-}
-
-// A tokenSpace implements space by embedding token type.
-type tokenSpace struct {
-	token
+// Type gets the value of the kind field.
+func (t token) Type() int {
+	return t.kind
 }
 
 // isSpace reports whether the rune is a space.
-func (t tokenSpace) isSpace() bool {
-	return true
-}
-
-// spacer represents boolean condition.
-type spacer interface {
-	isSpace() bool
+func isSpace(r rune) bool {
+	return r == ' '
 }
 
 // singledigits is a map where keys represent single digits
@@ -137,37 +109,37 @@ var singledigits = map[rune]int{
 	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
 }
 
-// tokenFactory returns interface depending on the incoming rune.
-func tokenFactory(r rune) (tokener, error) {
+// tokenFactory returns token depending on the incoming rune.
+func tokenFactory(r rune) (token, error) {
 
 	if val, ok := singledigits[r]; ok {
-		return tokenOperand{token: token{r: r}, val: val}, nil
+		return token{r: r, val: val, kind: Operand}, nil
 	}
 
 	if op, ok := operators[r]; ok {
-		return tokenOperator{token: token{r: r}, op: op}, nil
+		return token{r: r, op: op, kind: Operator}, nil
 	}
 
-	if r == ' ' {
-		return tokenSpace{token: token{r: r}}, nil
+	if isSpace(r) {
+		return token{r: r, kind: Space}, nil
 	}
 
 	return token{}, errors.New("unexpected token in tokenFactory")
 }
 
-// setToken processes tokener interfaces by cheking its type
+// setToken processes tokens by cheking its type
 // for setting arguments and operator.
-func (e *expression) setToken(t tokener) (int, error) {
+func (e *expression) setToken(t token) (int, error) {
 
-	if tv, ok := t.(valuer); ok {
-		return e.setArgument(tv.Value())
+	if t.kind == Operand {
+		return e.setArgument(t.Value())
 	}
 
-	if to, ok := t.(operatorer); ok {
-		return e.setOperator(to.Operator())
+	if t.kind == Operator {
+		return e.setOperator(t.Operator())
 	}
 
-	if _, ok := t.(spacer); ok {
+	if t.kind == Space {
 		return e.x, nil
 	}
 

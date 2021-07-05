@@ -15,7 +15,7 @@ func evalError(cause error, p int) error {
 // Eval provides evaluation of input string representing an expression
 // and returns result of mathematical operations.
 func Eval(input string) (int, error) {
-	exp := expression{}
+	var exp expression = expression{}
 
 	var result int
 

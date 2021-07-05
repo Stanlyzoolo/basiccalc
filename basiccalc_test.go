@@ -1,8 +1,9 @@
 package basiccalc_test
 
 import (
-	. "github.com/Stanlyzoolo/basiccalc"
 	"testing"
+
+	. "github.com/Stanlyzoolo/basiccalc"
 )
 
 func TestEval(t *testing.T) {

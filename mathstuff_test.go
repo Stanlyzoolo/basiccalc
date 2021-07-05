@@ -51,7 +51,7 @@ func TestSetOperator(t *testing.T) {
 }
 
 func detectType(t token) int {
-	switch t.kind {
+	switch t.variety {
 	case Operand:
 		return 0
 	case Operator:
@@ -66,9 +66,9 @@ func detectType(t token) int {
 func TestTokenFactory(t *testing.T) {
 
 	testTable := map[rune]token{
-		'2': {r: '2', val: 2, kind: Operator},
-		'+': {r: '+', op: func(x, y int) int { return x + y }, kind: Operator},
-		' ': {r: ' ', kind: Space},
+		'2': {r: '2', val: 2, variety: Operator},
+		'+': {r: '+', op: func(x, y int) int { return x + y }, variety: Operator},
+		' ': {r: ' ', variety: Space},
 		'*': {},
 	}
 
@@ -84,7 +84,7 @@ func TestTokenFactory(t *testing.T) {
 
 func TestSetToken(t *testing.T) {
 	expr := expression{}
-	tBad := token{r: '*', kind: 4}
+	tBad := token{r: '*', variety: 4}
 
 	_, err := expr.setToken(tBad)
 
@@ -99,7 +99,7 @@ func TestRune(t *testing.T) {
 
 	tk := token{r: want}
 
-	if tk.Rune() != want {
+	if tk.rune() != want {
 		t.Error("failed token.Rune()")
 	}
 }
@@ -109,7 +109,7 @@ func TestValue(t *testing.T) {
 
 	tk := token{val: want}
 
-	if tk.Value() != want {
+	if tk.value() != want {
 		t.Error("failed tokenOperand.Value()")
 	}
 }
@@ -117,9 +117,9 @@ func TestValue(t *testing.T) {
 func TestType(t *testing.T) {
 	var want int = 2
 
-	tk := token{kind: want}
+	tk := token{variety: want}
 
-	if tk.Type() != want {
+	if tk.kind() != want {
 		t.Error("failed tokenOperand.Type()")
 	}
 }

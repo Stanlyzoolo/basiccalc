@@ -63,7 +63,7 @@ func (e *expression) setOperator(fn action) (int, error) {
 	return e.x, errors.New("unexpected operator")
 }
 
-// Constants describe types of arguments for the expression.
+// constants describe variety of arguments for the expression.
 const (
 	Operand int = iota
 	Operator
@@ -72,30 +72,30 @@ const (
 
 // token represents a type for setting arguments and operators.
 type token struct {
-	r    rune
-	val  int
-	op   action
-	kind int
+	r       rune
+	val     int
+	op      action
+	variety int
 }
 
-// Rune gets the value of the r field.
-func (t token) Rune() rune {
+// rune gets the value of the r field.
+func (t token) rune() rune {
 	return t.r
 }
 
-// Value gets the value of the val field.
-func (t token) Value() int {
+// value gets the value of the val field.
+func (t token) value() int {
 	return t.val
 }
 
-// Operator gets the value of the op field.
-func (t token) Operator() action {
+// operator gets the value of the op field.
+func (t token) operator() action {
 	return t.op
 }
 
-// Type gets the value of the kind field.
-func (t token) Type() int {
-	return t.kind
+// kind gets the value of the variety field.
+func (t token) kind() int {
+	return t.variety
 }
 
 // isSpace reports whether the rune is a space.
@@ -113,15 +113,15 @@ var singledigits = map[rune]int{
 func tokenFactory(r rune) (token, error) {
 
 	if val, ok := singledigits[r]; ok {
-		return token{r: r, val: val, kind: Operand}, nil
+		return token{r: r, val: val, variety: Operand}, nil
 	}
 
 	if op, ok := operators[r]; ok {
-		return token{r: r, op: op, kind: Operator}, nil
+		return token{r: r, op: op, variety: Operator}, nil
 	}
 
 	if isSpace(r) {
-		return token{r: r, kind: Space}, nil
+		return token{r: r, variety: Space}, nil
 	}
 
 	return token{}, errors.New("unexpected token in tokenFactory")
@@ -131,15 +131,15 @@ func tokenFactory(r rune) (token, error) {
 // for setting arguments and operator.
 func (e *expression) setToken(t token) (int, error) {
 
-	if t.kind == Operand {
-		return e.setArgument(t.Value())
+	if t.variety == Operand {
+		return e.setArgument(t.value())
 	}
 
-	if t.kind == Operator {
-		return e.setOperator(t.Operator())
+	if t.variety == Operator {
+		return e.setOperator(t.operator())
 	}
 
-	if t.kind == Space {
+	if t.variety == Space {
 		return e.x, nil
 	}
 

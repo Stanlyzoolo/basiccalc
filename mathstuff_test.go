@@ -100,7 +100,7 @@ func TestRune(t *testing.T) {
 	tk := token{r: want}
 
 	if tk.rune() != want {
-		t.Error("failed token.Rune()")
+		t.Error("failed token.Rune(); want err = nil, got err != nil")
 	}
 }
 
@@ -110,7 +110,7 @@ func TestValue(t *testing.T) {
 	tk := token{val: want}
 
 	if tk.value() != want {
-		t.Error("failed tokenOperand.Value()")
+		t.Error("failed tokenOperand.Value(); want err = nil, got err != nil")
 	}
 }
 
@@ -120,6 +120,6 @@ func TestType(t *testing.T) {
 	tk := token{variety: want}
 
 	if tk.kind() != want {
-		t.Error("failed tokenOperand.Type()")
+		t.Error("failed tokenOperand.Type(); want err = nil, got err != nil")
 	}
 }

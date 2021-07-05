@@ -83,7 +83,7 @@ func TestTokenFactory(t *testing.T) {
 }
 
 func TestSetToken(t *testing.T) {
-	expr := expression{}
+	var expr expression = expression{}
 	tBad := token{r: '*', variety: 4}
 
 	_, err := expr.setToken(tBad)

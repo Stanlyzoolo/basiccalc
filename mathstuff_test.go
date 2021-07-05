@@ -99,7 +99,7 @@ func TestRune(t *testing.T) {
 
 	tk := token{r: want}
 
-	if tk.Rune() != want {
+	if tk.rune() != want {
 		t.Error("failed token.Rune()")
 	}
 }
@@ -109,7 +109,7 @@ func TestValue(t *testing.T) {
 
 	tk := tokenOperand{val: want}
 
-	if tk.Value() != want {
+	if tk.value() != want {
 		t.Error("failed tokenOperand.Value()")
 	}
 }
@@ -117,9 +117,9 @@ func TestValue(t *testing.T) {
 func TestType(t *testing.T) {
 	var want int = 2
 
-	tk := token{kind: want}
+	tk := token{variety: want}
 
-	if tk.Type() != want {
+	if tk.kind() != want {
 		t.Error("failed tokenOperand.Type()")
 	}
 }

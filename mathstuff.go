@@ -6,7 +6,7 @@ import (
 
 // action represents a simple function for performing simple mathematical
 //  operations depending on the operator.
-type action func(int, int) int 
+type action func(int, int) int
 
 // operators is a map where keys represent mathematical operators as a string
 //  type and values represent the corresponding function.
@@ -65,23 +65,23 @@ func (e *expression) setOperator(fn action) (int, error) {
 
 // token represents a type for setting arguments and operators.
 type token struct {
-	r    rune
-	kind int
+	r       rune
+	variety int
 }
 
-// Type gets the value of the kind field.
-func (t token) Type() int {
-	return t.kind
+// kind gets the value of the variety field.
+func (t token) kind() int {
+	return t.variety
 }
 
 // Rune gets the value of the r field.
-func (t token) Rune() rune {
+func (t token) rune() rune {
 	return t.r
 }
 
 // tokener represents Rune() getter.
 type tokener interface {
-	Rune() rune
+	rune() rune
 }
 
 // A tokenOperand implements operand by embedding token type.
@@ -91,13 +91,13 @@ type tokenOperand struct {
 }
 
 // Value gets the value of the val field.
-func (t tokenOperand) Value() int {
+func (t tokenOperand) value() int {
 	return t.val
 }
 
 // valuer represents Value() getter.
 type valuer interface {
-	Value() int
+	value() int
 }
 
 // A tokenOperator implements operator by embedding token type.
@@ -107,13 +107,13 @@ type tokenOperator struct {
 }
 
 // Operator gets the value of the op field.
-func (t tokenOperator) Operator() action {
+func (t tokenOperator) operator() action {
 	return t.op
 }
 
 // operatorer represents Operator() getter.
 type operatorer interface {
-	Operator() action
+	operator() action
 }
 
 // A tokenSpace implements space by embedding token type.
@@ -160,11 +160,11 @@ func tokenFactory(r rune) (tokener, error) {
 func (e *expression) setToken(t tokener) (int, error) {
 
 	if tv, ok := t.(valuer); ok {
-		return e.setArgument(tv.Value())
+		return e.setArgument(tv.value())
 	}
 
 	if to, ok := t.(operatorer); ok {
-		return e.setOperator(to.Operator())
+		return e.setOperator(to.operator())
 	}
 
 	if _, ok := t.(spacer); ok {

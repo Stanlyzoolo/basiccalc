@@ -52,3 +52,25 @@ func TestCalculate(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkEval3(b *testing.B) {
+	input := "2+1"
+
+	for n := 0; n < b.N; n++ {
+		Eval(input)
+	}
+}
+
+func BenchmarkEva10(b *testing.B) {
+	input := "2+1   +1-8"
+	for n := 0; n < b.N; n++ {
+		Eval(input)
+	}
+}
+
+func BenchmarkEval30(b *testing.B) {
+	input := "2+1-1   +8  -4+3 -1+2 +3-8+9+5"
+	for n := 0; n < b.N; n++ {
+		Eval(input)
+	}
+}

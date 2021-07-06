@@ -3,7 +3,7 @@ package basiccalc_test
 import (
 	"testing"
 
-	. "github.com/Stanlyzoolo/basiccalc"
+	. "github.com/stanlyzoolo/basiccalc"
 )
 
 func TestEval(t *testing.T) {

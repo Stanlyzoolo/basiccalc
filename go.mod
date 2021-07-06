@@ -1,3 +1,3 @@
-module github.com/Stanlyzoolo/basiccalc
+module github.com/stanlyzoolo/basiccalc
 
 go 1.16

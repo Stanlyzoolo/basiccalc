@@ -14,7 +14,7 @@ func TestSetArgument(t *testing.T) {
 	}
 
 	// any int value
-	var arg int = 2
+	var arg = 2
 
 	expr := expression{
 		evaluation: func(x, y int) int { return x + y },
@@ -83,7 +83,7 @@ func TestTokenFactory(t *testing.T) {
 }
 
 func TestSetToken(t *testing.T) {
-	var expr expression = expression{}
+	var expr expression
 	tBad := token{r: '*'}
 
 	_, err := expr.setToken(tBad)
@@ -95,7 +95,7 @@ func TestSetToken(t *testing.T) {
 }
 
 func TestRune(t *testing.T) {
-	var want rune = '1'
+	var want = '1'
 
 	tk := token{r: want}
 
@@ -105,7 +105,7 @@ func TestRune(t *testing.T) {
 }
 
 func TestValue(t *testing.T) {
-	var want int = 1
+	var want = 1
 
 	tk := tokenOperand{val: want}
 
@@ -115,7 +115,7 @@ func TestValue(t *testing.T) {
 }
 
 func TestType(t *testing.T) {
-	var want int = 2
+	var want = 2
 
 	tk := token{variety: want}
 

@@ -18,7 +18,7 @@ var operators = map[rune]action{
 // expression represents a trivial implementation of a sequence consisting of two arguments,
 // an operator and a state of fullness of the structure.
 type expression struct {
-	x, y       int
+	x      int
 	evaluation action
 	state      int
 }

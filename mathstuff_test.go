@@ -53,6 +53,7 @@ func TestCalculate(t *testing.T) {
 	}
 }
 
+//nolint
 func BenchmarkEval3(b *testing.B) {
 	input := "2+1"
 
@@ -61,6 +62,7 @@ func BenchmarkEval3(b *testing.B) {
 	}
 }
 
+//nolint
 func BenchmarkEva10(b *testing.B) {
 	input := "2+1   +1-8"
 	for n := 0; n < b.N; n++ {
@@ -68,6 +70,7 @@ func BenchmarkEva10(b *testing.B) {
 	}
 }
 
+//nolint
 func BenchmarkEval30(b *testing.B) {
 	input := "2+1-1   +8  -4+3 -1+2 +3-8+9+5"
 	for n := 0; n < b.N; n++ {

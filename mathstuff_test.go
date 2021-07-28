@@ -31,7 +31,7 @@ func TestSetArgument(t *testing.T) {
 }
 
 func TestSetOperator(t *testing.T) {
-	var fn Action
+	var fn action
 
 	if TestExpression.state != FirstArgument {
 		err := TestExpression.SetOperator(fn)

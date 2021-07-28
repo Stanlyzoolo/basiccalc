@@ -2,19 +2,27 @@ package basiccalc
 
 import (
 	"errors"
-) 
+)
 
-type Action func(int, int) int
+type action func(int, int) int
 
-var operators = map[string]Action{			
-	"+": func(x, y int) int { return x + y },
-	"-": func(x, y int) int { return x - y },
+// pickArgument provides selection of argument according to the input rune.
+func pickOperator(s string) (action, bool) {
+	if s == "+" {
+		return func(x, y int) int { return x + y }, true
+	}
+
+	if s == "-" {
+		return func(x, y int) int { return x - y }, true
+	}
+
+	return nil, false
 }
 
-type expression struct {			
-	x, y     int
-	evaluation Action				
-	state     int
+type expression struct {
+	x, y       int
+	evaluation action
+	state      int
 }
 
 const (
@@ -28,38 +36,48 @@ func (exp *expression) IsReady() bool {
 	return exp.state == Ready
 }
 
+var errArg = errors.New("unexpected argument")
+
 func (exp *expression) SetArgument(arg int) error {
 	if exp.state == Initialized {
 		exp.x = arg
 		exp.state = FirstArgument
+
 		return nil
 	}
 
 	if exp.state == FirstArgWithOperator {
 		exp.y = arg
 		exp.state = Ready
+
 		return nil
 	}
 
-	return errors.New("unexpected argument")
+	return errArg
 }
 
-func (exp *expression) SetOperator(fn Action) error {
+var errOp = errors.New("unexpected operator")
+
+func (exp *expression) SetOperator(fn action) error {
 	if exp.state == FirstArgument {
 		exp.evaluation = fn
 		exp.state = FirstArgWithOperator
+
 		return nil
 	}
 
-	return errors.New("unexpected operator")
+	return errOp
 }
+
+var errCalc = errors.New("invalid expression")
 
 func (exp *expression) Calculate() (int, error) {
 	if exp.state == Ready {
 		exp.x = exp.evaluation(exp.x, exp.y)
 		exp.state = FirstArgument
+
 		return exp.x, nil
 	}
 
-	return 0, errors.New("invalid expression")
+	return 0, errCalc
 }

@@ -114,12 +114,12 @@ func TestValue(t *testing.T) {
 	}
 }
 
-func TestType(t *testing.T) {
-	var want = 2
+// func TestType(t *testing.T) {
+// 	var want = 2
 
-	tk := token{variety: want}
+// 	tk := token{variety: want}
 
-	if tk.kind() != want {
-		t.Error("failed tokenOperand.Type(); want err = nil, got err != nil")
-	}
-}
+// 	if tk.kind() != want {
+// 		t.Error("failed tokenOperand.Type(); want err = nil, got err != nil")
+// 	}
+// }

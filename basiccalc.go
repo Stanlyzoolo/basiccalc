@@ -11,7 +11,7 @@ import (
 
 // evalError wrap cause error for more context.
 func evalError(cause error, p int) error {
-	return fmt.Errorf("%s at position %v", cause, p)
+	return fmt.Errorf("%w at position %v", cause, p)
 }
 
 // Eval provides evaluation of input string representing an expression
@@ -24,7 +24,6 @@ func Eval(input string) (int, error) {
 	logger, _ := zap.NewDevelopment()
 
 	for p, r := range input {
-
 		tk, err := tokenFactory(r)
 		if err != nil {
 			logger.Error("failed to eval input expression",
@@ -34,11 +33,12 @@ func Eval(input string) (int, error) {
 				zap.Int("position", p),
 				zap.Error(err),
 			)
+
 			return 0, evalError(err, p)
 		}
 
 		result, _ = exp.setToken(tk)
-
 	}
+
 	return result, nil
 }

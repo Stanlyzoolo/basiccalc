@@ -8,17 +8,23 @@ import (
 //  operations depending on the operator.
 type action func(int, int) int
 
-// operators is a map where keys represent mathematical operators as a string
-//  type and values represent the corresponding function.
-var operators = map[rune]action{
-	'+': func(x, y int) int { return x + y },
-	'-': func(x, y int) int { return x - y },
+// pickArgument provides selection of argument according to the input rune.
+func pickOperator(r rune) (action, bool) {
+	if r == '+' {
+		return func(x, y int) int { return x + y }, true
+	}
+
+	if r == '-' {
+		return func(x, y int) int { return x - y }, true
+	}
+
+	return nil, false
 }
 
 // expression represents a trivial implementation of a sequence consisting of two arguments,
 // an operator and a state of fullness of the structure.
 type expression struct {
-	x       int
+	x          int
 	evaluation action
 	state      int
 }
@@ -31,24 +37,29 @@ const (
 	FirstArgWithOperator
 )
 
+var errArg = errors.New("unexpected argument")
+
 // setArgument takes an argument, checks current
 // state of the structure and assigns its value to the corresponding field.
 func (e *expression) setArgument(arg int) (int, error) {
-
 	if e.state == Initialized {
 		e.x = arg
 		e.state = FirstArgument
+
 		return e.x, nil
 	}
 
 	if e.state == FirstArgWithOperator {
 		e.x = e.evaluation(e.x, arg)
 		e.state = FirstArgument
+
 		return e.x, nil
 	}
 
-	return e.x, errors.New("unexpected argument")
+	return e.x, errArg
 }
+
+var errOp = errors.New("unexpected operator")
 
 // setOperator takes action type function, checks current
 // state of the structure and assigns its value – function from operators map
@@ -57,10 +68,11 @@ func (e *expression) setOperator(fn action) (int, error) {
 	if e.state == FirstArgument {
 		e.evaluation = fn
 		e.state = FirstArgWithOperator
+
 		return e.x, nil
 	}
 
-	return e.x, errors.New("unexpected operator")
+	return e.x, errOp
 }
 
 // constants describe variety of arguments for the expression.
@@ -78,11 +90,6 @@ type token struct {
 	variety int
 }
 
-// rune gets the value of the r field.
-func (t token) rune() rune {
-	return t.r
-}
-
 // value gets the value of the val field.
 func (t token) value() int {
 	return t.val
@@ -93,44 +100,63 @@ func (t token) operator() action {
 	return t.op
 }
 
-// kind gets the value of the variety field.
-func (t token) kind() int {
-	return t.variety
-}
-
 // isSpace reports whether the rune is a space.
 func isSpace(r rune) bool {
 	return r == ' '
 }
 
-// singledigits is a map where keys represent single digits
-//  as a string type and values represent them in type int.
-var singledigits = map[rune]int{
-	'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+//nolint
+// pickArgument provides selection of argument according to the input rune.
+func pickArgument(r rune) (int, bool) {
+	switch r {
+	case '0':
+		return 0, true
+	case '1':
+		return 1, true
+	case '2':
+		return 2, true
+	case '3':
+		return 3, true
+	case '4':
+		return 4, true
+	case '5':
+		return 5, true
+	case '6':
+		return 6, true
+	case '7':
+		return 7, true
+	case '8':
+		return 8, true
+	case '9':
+		return 9, true
+	}
+	return 0, false
 }
+
+var errTokenFactory = errors.New("unexpected token in tokenFactory")
 
 // tokenFactory returns token depending on the incoming rune.
 func tokenFactory(r rune) (token, error) {
-
-	if val, ok := singledigits[r]; ok {
-		return token{r: r, val: val, variety: Operand}, nil
+	if val, ok := pickArgument(r); ok {
+		return token{r: r, val: val, variety: Operand, op: nil}, nil
 	}
 
-	if op, ok := operators[r]; ok {
-		return token{r: r, op: op, variety: Operator}, nil
+	if op, ok := pickOperator(r); ok {
+		return token{r: r, op: op, variety: Operator, val: 0}, nil
 	}
 
 	if isSpace(r) {
-		return token{r: r, variety: Space}, nil
+		return token{r: r, variety: Space, val: 0, op: nil}, nil
 	}
 
-	return token{}, errors.New("unexpected token in tokenFactory")
+	return token{}, errTokenFactory
 }
+
+var errToken = errors.New("unexpected token in setToken()")
 
 // setToken processes tokens by cheking its type
 // for setting arguments and operator.
 func (e *expression) setToken(t token) (int, error) {
-
 	if t.variety == Operand {
 		return e.setArgument(t.value())
 	}
@@ -143,5 +169,5 @@ func (e *expression) setToken(t token) (int, error) {
 		return e.x, nil
 	}
 
-	return e.x, errors.New("unexpected token in setToken()")
+	return e.x, errToken
 }

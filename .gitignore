@@ -1,3 +1,6 @@
 #pprof
 basiccalc.test
 cpuout
+
+#golangci-lint config
+.golangci.yml
